@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="ExempleAnt" default="compile" basedir=".">
+
+<property name="projet.sources.dir" value="src"/>
+<property name="projet.bin.dir" value="bin"/>
+<property name="projet.lib.dir" value="lib"/>
+
+<path id="projet.classpath">
+	<fileset dir="${projet.lib.dir}">
+		<include name="*.jar"/>
+	</fileset>
+	<pathelement location="${projet.bin.dir}" />
+</path>
+
+<target name="compile" description="Compilation des classes">
+<mkdir dir="${basedir}/lib"/>
+<mkdir dir="${basedir}/bin"/>
+
+	<javac srcdir="${projet.sources.dir}" destdir="${projet.bin.dir}" debug="on" optimize="off" deprecation="on" includeantruntime="false">
+		<classpath refid="projet.classpath"/>
+	</javac>
+</target>
+
+<target name="init">
+<echo message="Initialisation de ${ant.project.name}"/>
+<delete dir="${basedir}/gen"/>
+<mkdir dir="${basedir}/gen"/>
+</target>
+
+<target name="run" description="execution" depends="compile">
+	<java classname="gui.Main" fork="true">
+		<classpath refid="projet.classpath"/>
+	</java>
+</target>
+
+<target name="javadoc">
+	<javadoc sourcepath="src" destdir="doc" >
+	<fileset dir="src" defaultexcludes="yes">
+		<include name="**" />
+	</fileset>
+	</javadoc>
+</target>
+
+<target name="packaging" depends="compile">
+
+    <manifest file="${basedir}/Manifest.txt">
+        <attribute name="Main-Class" value="gui.Main"/>  
+    </manifest>
+
+	<jar jarfile="lancerDeRayon.jar" basedir="${projet.bin.dir}" manifest="${basedir}/Manifest.txt"/>
+	
+</target>
+
+</project>
